@@ -436,7 +436,6 @@ class VoiceClient:
             raise ClientException('Popen failed: {0.__name__} {1}'.format(type(e), str(e))) from e
 
 
-    @asyncio.coroutine
     def create_ytdl_player(self, url, *, ytdl_options=None, **kwargs):
         """|coro|
 
@@ -531,8 +530,11 @@ class VoiceClient:
             opts.update(ytdl_options)
 
         ydl = youtube_dl.YoutubeDL(opts)
-        func = functools.partial(ydl.extract_info, url, download=False)
-        info = yield from self.loop.run_in_executor(None, func)
+        # func = functools.partial(ydl.extract_info, url, download=False)
+        # info = yield from self.loop.run_in_executor(None, func)
+
+        info = ydl.extract_info(url, download=False)
+        
         if "entries" in info:
             info = info['entries'][0]
 
